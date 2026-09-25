@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>ZORO Vision</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#020914;
+  color:#e8f7ff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  display:flex;
+  justify-content:center;
+}
+
+.vision-page{
+  width:100%;
+  max-width:520px;
+  height:100dvh;
+
+  display:flex;
+  flex-direction:column;
+
+  overflow:hidden;
+
+  padding:10px 12px;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(0,110,255,.10),
+      transparent 32%
+    ),
+    #020914;
+}
+
+/* HEADER */
+
+.header{
+  flex-shrink:0;
+
+  height:58px;
+
+  display:flex;
+  align-items:center;
+
+  position:relative;
+
+  border-bottom:1px solid rgba(0,124,255,.35);
+}
+
+.back{
+  width:40px;
+  height:40px;
+
+  border-radius:50%;
+
+  border:1px solid #087cff;
+
+  background:#03172a;
+
+  color:#00dfff;
+
+  font-size:22px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.title{
+  flex:1;
+  text-align:center;
+  margin-right:40px;
+}
+
+.title-main{
+  font-size:19px;
+  font-weight:bold;
+  letter-spacing:4px;
+
+  color:#e1faff;
+
+  text-shadow:
+    0 0 8px #00bfff,
+    0 0 18px #007cff;
+}
+
+.title-sub{
+  margin-top:3px;
+
+  font-size:8px;
+  letter-spacing:2px;
+
+  color:#00bfff;
+}
+
+/* VISION AREA */
+
+.vision-content{
+  flex:1;
+  min-height:0;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+
+  gap:14px;
+
+  overflow:hidden;
+}
+
+/* CAMERA */
+
+.camera{
+  width:100%;
+
+  aspect-ratio:1 / 1;
+
+  max-height:55vh;
+
+  border:1px solid #087cff;
+
+  border-radius:22px;
+
+  position:relative;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0,105,255,.14),
+      rgba(2,15,29,.96) 65%
+    );
+
+  background-size:cover;
+  background-position:center;
+
+  box-shadow:
+    0 0 20px rgba(0,110,255,.15),
+    inset 0 0 25px rgba(0,100,255,.08);
+}
+
+/* IMAGE OVERLAY */
+
+.camera.has-image .vision-core,
+.camera.has-image .scan-line{
+  display:none;
+}
+
+.camera.has-image::after{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,20,40,.10),
+      rgba(0,5,15,.18)
+    );
+
+  pointer-events:none;
+}
+
+/* CORNERS */
+
+.corner{
+  position:absolute;
+
+  width:28px;
+  height:28px;
+
+  border-color:#00dfff;
+  border-style:solid;
+
+  z-index:3;
+}
+
+.corner.tl{
+  top:14px;
+  left:14px;
+  border-width:2px 0 0 2px;
+}
+
+.corner.tr{
+  top:14px;
+  right:14px;
+  border-width:2px 2px 0 0;
+}
+
+.corner.bl{
+  bottom:14px;
+  left:14px;
+  border-width:0 0 2px 2px;
+}
+
+.corner.br{
+  bottom:14px;
+  right:14px;
+  border-width:0 2px 2px 0;
+}
+
+/* CENTER */
+
+.vision-core{
+  width:105px;
+  height:105px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:2px solid #00dfff;
+
+  background:
+    radial-gradient(
+      circle,
+      #07355a,
+      #020d1b 70%
+    );
+
+  box-shadow:
+    0 0 20px #008cff,
+    inset 0 0 20px #006cff;
+
+  animation:pulse 2.5s ease-in-out infinite;
+
+  z-index:2;
+}
+
+.vision-eye{
+  font-size:43px;
+
+  color:#d7fbff;
+
+  text-shadow:
+    0 0 8px #00eaff,
+    0 0 20px #008cff;
+}
+
+@keyframes pulse{
+
+  0%,100%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.04);
+  }
+
+}
+
+/* SCAN */
+
+.scan-line{
+  position:absolute;
+
+  left:8%;
+  right:8%;
+
+  height:1px;
+
+  background:#00dfff;
+
+  box-shadow:0 0 10px #00dfff;
+
+  animation:scan 3s linear infinite;
+
+  z-index:2;
+}
+
+@keyframes scan{
+
+  0%{
+    top:12%;
+    opacity:.2;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    top:88%;
+    opacity:.2;
+  }
+
+}
+
+/* INFO */
+
+.vision-info{
+  text-align:center;
+}
+
+.vision-status{
+  color:#00f3a5;
+
+  font-size:10px;
+  font-weight:bold;
+
+  letter-spacing:2px;
+}
+
+.vision-hint{
+  margin-top:5px;
+
+  color:#7ea6c5;
+
+  font-size:10px;
+}
+
+/* CONTROLS */
+
+.controls{
+  flex-shrink:0;
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:9px;
+}
+
+.control{
+  height:50px;
+
+  border:1px solid #087cff;
+
+  border-radius:25px;
+
+  background:#03172a;
+
+  color:#00dfff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:7px;
+
+  font-size:10px;
+
+  box-shadow:
+    0 0 10px rgba(0,120,255,.12);
+}
+
+.control:active{
+  background:#06345b;
+}
+
+/* BOTTOM */
+
+.bottom-note{
+  flex-shrink:0;
+
+  height:35px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#527c9d;
+
+  font-size:8px;
+
+  letter-spacing:1px;
+}
+
+/* SMALL PHONES */
+
+@media(max-height:700px){
+
+  .vision-page{
+    padding-top:7px;
+  }
+
+  .header{
+    height:52px;
+  }
+
+  .camera{
+    max-height:48vh;
+  }
+
+  .vision-core{
+    width:80px;
+    height:80px;
+  }
+
+  .vision-eye{
+    font-size:32px;
+  }
+
+  .control{
+    height:44px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="vision-page">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <button class="back" onclick="goHome()">‹</button>
+
+    <div class="title">
+
+      <div class="title-main">VISION</div>
+
+      <div class="title-sub">
+        ZORO VISUAL SYSTEM
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- VISION -->
+
+  <main class="vision-content">
+
+    <section class="camera" id="cameraArea">
+
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <div class="scan-line"></div>
+
+      <div class="vision-core">
+        <div class="vision-eye">◉</div>
+      </div>
+
+    </section>
+
+    <div class="vision-info">
+
+      <div class="vision-status" id="visionStatus">
+        ● VISION READY
+      </div>
+
+      <div class="vision-hint" id="visionHint">
+        use camera or select an image for zoro to analyze
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- CONTROLS -->
+
+  <section class="controls">
+
+    <button
+      class="control"
+      id="cameraButton"
+      type="button">
+      📷 camera
+    </button>
+
+    <button
+      class="control"
+      id="imageButton"
+      type="button">
+      🖼 image
+    </button>
+
+  </section>
+
+
+  <div class="bottom-note">
+    ZORO VISION • READY
+  </div>
+
+</div>
+
+
+<!-- HIDDEN INPUTS -->
+
+<input
+  id="cameraInput"
+  type="file"
+  accept="image/*"
+  capture="environment"
+  hidden>
+
+<input
+  id="imageInput"
+  type="file"
+  accept="image/*"
+  hidden>
+
+
+<script>
+
+/* =========================
+   HOME
+========================= */
+
+function goHome(){
+  window.location.href="/";
+}
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const cameraButton =
+  document.getElementById("cameraButton");
+
+const imageButton =
+  document.getElementById("imageButton");
+
+const cameraInput =
+  document.getElementById("cameraInput");
+
+const imageInput =
+  document.getElementById("imageInput");
+
+const cameraArea =
+  document.getElementById("cameraArea");
+
+const visionStatus =
+  document.getElementById("visionStatus");
+
+const visionHint =
+  document.getElementById("visionHint");
+
+
+/* =========================
+   CAMERA
+========================= */
+
+cameraButton.addEventListener("click", () => {
+
+  cameraInput.click();
+
+});
+
+
+/* =========================
+   IMAGE
+========================= */
+
+imageButton.addEventListener("click", () => {
+
+  imageInput.click();
+
+});
+
+
+/* =========================
+   IMAGE HANDLER
+========================= */
+
+function loadVisionImage(file){
+
+  if(!file){
+    return;
+  }
+
+  if(!file.type.startsWith("image/")){
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(event){
+
+    cameraArea.style.backgroundImage =
+      `url("${event.target.result}")`;
+
+    cameraArea.classList.add("has-image");
+
+    visionStatus.textContent =
+      "● IMAGE READY";
+
+    visionHint.textContent =
+      "image loaded • ready for zoro analysis";
+
+    cameraButton.textContent =
+      "📷 change";
+
+    imageButton.textContent =
+      "✓ selected";
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* =========================
+   CAMERA RESULT
+========================= */
+
+cameraInput.addEventListener(
+  "change",
+  () => {
+
+    loadVisionImage(
+      cameraInput.files[0]
+    );
+
+  }
+);
+
+
+/* =========================
+   GALLERY RESULT
+========================= */
+
+imageInput.addEventListener(
+  "change",
+  () => {
+
+    loadVisionImage(
+      imageInput.files[0]
+    );
+
+  }
+);
+
+</script>
+
+</body>
+</html>

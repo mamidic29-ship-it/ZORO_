@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ZORO AI Assistant</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#020914;
+  color:#e8f7ff;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  display:flex;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:520px;
+  height:100dvh;
+  padding:12px 14px 10px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 25%,rgba(0,110,255,.10),transparent 28%),
+    #020914;
+}
+
+/* LOGO */
+
+.header{
+  flex-shrink:0;
+  text-align:center;
+}
+
+.logo{
+  font-size:38px;
+  font-weight:bold;
+  letter-spacing:11px;
+  margin-left:10px;
+  color:#e1faff;
+  text-shadow:0 0 10px #00bfff,0 0 25px #007cff;
+}
+
+.subtitle{
+  margin-top:1px;
+  font-size:9px;
+  letter-spacing:5px;
+  color:#00bfff;
+}
+
+/* TOP CARDS */
+
+.top{
+  flex-shrink:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:9px;
+}
+
+.card{
+  border:1px solid #087cff;
+  border-radius:15px;
+  background:rgba(3,18,34,.78);
+  box-shadow:0 0 12px rgba(0,120,255,.12);
+}
+
+.weather{
+  padding:10px;
+}
+
+.date{
+  font-size:12px;
+}
+
+.day{
+  font-size:10px;
+  color:#9bbbd5;
+  margin-top:4px;
+}
+
+.line{
+  height:1px;
+  background:#075ea8;
+  margin:8px 0;
+}
+
+.weather-main{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.weather-icon{
+  font-size:26px;
+}
+
+.temp{
+  font-size:27px;
+}
+
+.condition{
+  font-size:10px;
+  margin-top:7px;
+}
+
+.city{
+  font-size:11px;
+  color:#a9cce5;
+  margin-top:4px;
+}
+
+.system{
+  padding:9px 10px;
+}
+
+.online{
+  color:#00f3a5;
+  font-size:10px;
+  margin-bottom:7px;
+}
+
+.dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#00f3a5;
+  box-shadow:0 0 9px #00f3a5;
+  margin-right:5px;
+}
+
+.sys{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:6px 0;
+}
+
+.sys-icon{
+  width:22px;
+  font-size:18px;
+  color:#00dfff;
+  text-align:center;
+}
+
+.sys-text{
+  font-size:9px;
+}
+
+.sys-text span{
+  display:block;
+  color:#00dfff;
+  margin-top:1px;
+}
+
+/* Z CORE */
+
+.core-area{
+  flex:0 0 175px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.core{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle,rgba(0,120,255,.13),transparent 68%);
+  box-shadow:0 0 25px rgba(0,140,255,.3);
+}
+
+.core:before{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border-radius:50%;
+  border:2px solid #087cff;
+  border-top-color:#00eaff;
+  border-bottom-color:#004dba;
+  box-shadow:0 0 13px #008cff;
+}
+
+.core:after{
+  content:"";
+  position:absolute;
+  inset:17px;
+  border-radius:50%;
+  border:3px solid transparent;
+  border-left-color:#00eaff;
+  border-right-color:#008cff;
+  transform:rotate(25deg);
+}
+
+.z-circle{
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid #00dfff;
+  background:radial-gradient(circle,#07355a,#020d1b 70%);
+  box-shadow:0 0 18px #008cff,inset 0 0 18px #006cff;
+}
+
+.z{
+  font-size:49px;
+  font-weight:900;
+  font-style:italic;
+  color:#d7fbff;
+  text-shadow:0 0 9px #00eaff,0 0 20px #008cff;
+}
+
+/* CONVERSATION */
+
+.chat{
+  flex:0 0 154px;
+  height:154px;
+  min-height:154px;
+  border:1px solid #087cff;
+  border-radius:15px;
+  background:rgba(2,15,29,.78);
+  padding:7px 9px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-evenly;
+  overflow:hidden;
+  box-shadow:0 0 12px rgba(0,110,255,.10);
+}
+
+.message{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  max-width:78%;
+}
+
+.message.user{
+  align-self:flex-end;
+  flex-direction:row-reverse;
+}
+
+.avatar{
+  flex-shrink:0;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  border:1px solid #00bfff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#00eaff;
+  font-size:10px;
+  background:#03172a;
+  box-shadow:0 0 7px rgba(0,145,255,.4);
+}
+
+.bubble{
+  min-width:90px;
+  padding:5px 8px;
+  border:1px solid #086bd2;
+  border-radius:9px;
+  background:linear-gradient(135deg,rgba(5,38,76,.85),rgba(3,22,43,.9));
+}
+
+.name{
+  color:#00cfff;
+  font-size:8px;
+  font-weight:bold;
+  margin-bottom:2px;
+}
+
+.text{
+  font-size:9px;
+  line-height:1.2;
+  color:#e5f5ff;
+}
+
+.time{
+  text-align:right;
+  margin-top:2px;
+  font-size:6px;
+  color:#78a9cf;
+}
+
+/* MICROPHONE */
+
+.voice{
+  flex-shrink:0;
+  height:125px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.mic{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:3px solid #00cfff;
+  background:radial-gradient(circle,#07396a,#021326 70%);
+  box-shadow:0 0 15px #008cff,0 0 28px rgba(0,150,255,.3);
+}
+
+.mic-icon{
+  font-size:31px;
+  filter:drop-shadow(0 0 5px white);
+}
+
+.wave{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.left{
+  right:calc(50% + 57px);
+}
+
+.right{
+  left:calc(50% + 57px);
+}
+
+.wave span{
+  width:3px;
+  border-radius:4px;
+  background:#00dfff;
+  box-shadow:0 0 7px #00bfff;
+}
+
+.wave span:nth-child(1){height:8px}
+.wave span:nth-child(2){height:15px}
+.wave span:nth-child(3){height:24px}
+.wave span:nth-child(4){height:34px}
+.wave span:nth-child(5){height:22px}
+.wave span:nth-child(6){height:13px}
+
+.tap{
+  position:absolute;
+  bottom:5px;
+  font-size:10px;
+  color:#00cfff;
+}
+
+/* BOTTOM NAV */
+
+.nav{
+  flex-shrink:0;
+  height:60px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid #087cff;
+  border-radius:30px;
+  background:rgba(3,17,32,.9);
+  overflow:hidden;
+}
+
+.nav-item{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:#91aec8;
+  font-size:9px;
+}
+
+.nav-icon{
+  font-size:20px;
+}
+
+.nav-item.active{
+  color:#00dfff;
+  text-shadow:0 0 7px #008cff;
+}
+
+.nav-item.active:after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  width:65px;
+  height:3px;
+  background:#00dfff;
+  box-shadow:0 0 10px #00cfff;
+}
+
+/* SHORT PHONES */
+
+@media(max-height:700px){
+
+  .app{
+    padding-top:7px;
+  }
+
+  .logo{
+    font-size:32px;
+  }
+
+  .top{
+    margin-top:6px;
+  }
+
+  .core-area{
+    flex-basis:135px;
+  }
+
+  .core{
+    width:120px;
+    height:120px;
+  }
+
+  .z-circle{
+    width:64px;
+    height:64px;
+  }
+
+  .z{
+    font-size:40px;
+  }
+
+  .chat{
+    flex-basis:140px;
+    height:140px;
+    min-height:140px;
+  }
+
+  .voice{
+    height:95px;
+  }
+
+  .mic{
+    width:60px;
+    height:60px;
+  }
+
+  .mic-icon{
+    font-size:26px;
+  }
+
+  .nav{
+    height:50px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="logo">ZORO</div>
+    <div class="subtitle">YOUR AI ASSISTANT</div>
+  </header>
+
+  <section class="top">
+
+    <div class="card weather">
+      <div class="date">19 SEP 2026</div>
+      <div class="day">SAT</div>
+      <div class="line"></div>
+
+      <div class="weather-main">
+        <div class="weather-icon">🌤️</div>
+        <div class="temp">28°C</div>
+      </div>
+
+      <div class="condition">Partly Cloudy</div>
+      <div class="city">Vijayawada</div>
+    </div>
+
+    <div class="card system">
+
+      <div class="online">
+        <span class="dot"></span>AI CORE ONLINE
+      </div>
+
+      <div class="sys">
+        <div class="sys-icon">🧠</div>
+        <div class="sys-text">MEMORY<span>Ready</span></div>
+      </div>
+
+      <div class="sys">
+        <div class="sys-icon">◉</div>
+        <div class="sys-text">VISION<span>Ready</span></div>
+      </div>
+
+      <div class="sys">
+        <div class="sys-icon">◎</div>
+        <div class="sys-text">INTERNET<span>Connected</span></div>
+      </div>
+
+      <div class="sys">
+        <div class="sys-icon">⚙</div>
+        <div class="sys-text">SYSTEM<span>Optimized</span></div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="core-area">
+    <div class="core">
+      <div class="z-circle">
+        <div class="z">Z</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUR MESSAGE PREVIEW -->
+
+  <section class="chat">
+
+    <div class="message user">
+      <div class="avatar">●</div>
+      <div class="bubble">
+        <div class="name">you</div>
+        <div class="text">hello zoro!</div>
+        <div class="time">10:24 ✓✓</div>
+      </div>
+    </div>
+
+    <div class="message">
+      <div class="avatar">Z</div>
+      <div class="bubble">
+        <div class="name">zoro</div>
+        <div class="text">hello! i'm zoro.</div>
+        <div class="time">10:24</div>
+      </div>
+    </div>
+
+    <div class="message user">
+      <div class="avatar">●</div>
+      <div class="bubble">
+        <div class="name">you</div>
+        <div class="text">can you help me?</div>
+        <div class="time">10:25 ✓✓</div>
+      </div>
+    </div>
+
+    <div class="message">
+      <div class="avatar">Z</div>
+      <div class="bubble">
+        <div class="name">zoro</div>
+        <div class="text">of course. i'm here for you.</div>
+        <div class="time">10:25</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MICROPHONE -->
+
+  <section class="voice">
+
+    <div class="wave left">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="mic">
+      <div class="mic-icon">🎙</div>
+    </div>
+
+    <div class="wave right">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="tap">tap to speak</div>
+
+  </section>
+
+  <!-- NAVIGATION -->
+
+  <nav class="nav">
+
+    <div class="nav-item active">
+      <div class="nav-icon">▤</div>
+      chat
+    </div>
+
+    <div class="nav-item">
+      <div class="nav-icon">◉</div>
+      vision
+    </div>
+
+    <div class="nav-item">
+      <div class="nav-icon">⚙</div>
+      settings
+    </div>
+
+  </nav>
+
+</div>
+
+</body>
+</html>
