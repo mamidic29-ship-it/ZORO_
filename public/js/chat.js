@@ -3,7 +3,18 @@ const input = document.getElementById("messageInput");
 const messages = document.getElementById("messages");
 const micButton = document.getElementById("chatMic");
 
-/* Add message */
+
+/* =========================
+   ZORO SESSION
+========================= */
+
+let zoroSessionId =
+  localStorage.getItem("zoroSessionId") || "";
+
+
+/* =========================
+   ADD MESSAGE
+========================= */
 
 function addMessage(type, text) {
 
@@ -12,21 +23,35 @@ function addMessage(type, text) {
   message.className = `msg ${type}`;
 
   const avatar = document.createElement("div");
+
   avatar.className = "avatar";
-  avatar.textContent = type === "you" ? "●" : "Z";
+
+  avatar.textContent =
+    type === "you" ? "●" : "Z";
+
 
   const bubble = document.createElement("div");
+
   bubble.className = "bubble";
 
+
   const sender = document.createElement("div");
+
   sender.className = "sender";
-  sender.textContent = type === "you" ? "you" : "zoro";
+
+  sender.textContent =
+    type === "you" ? "you" : "zoro";
+
 
   const messageText = document.createElement("div");
+
   messageText.className = "message-text";
+
   messageText.textContent = text;
 
+
   const time = document.createElement("div");
+
   time.className = "message-time";
 
   time.textContent =
@@ -34,6 +59,7 @@ function addMessage(type, text) {
       hour: "2-digit",
       minute: "2-digit"
     });
+
 
   bubble.appendChild(sender);
   bubble.appendChild(messageText);
@@ -44,69 +70,176 @@ function addMessage(type, text) {
 
   messages.appendChild(message);
 
-  messages.scrollTop = messages.scrollHeight;
+  messages.scrollTop =
+    messages.scrollHeight;
 }
 
 
-/* Send message */
+/* =========================
+   SEND MESSAGE TO ZORO
+========================= */
 
-form.addEventListener("submit", function(event){
-
-  event.preventDefault();
-
-  const text = input.value.trim();
-
-  if(!text){
-    return;
-  }
-
-  addMessage("you", text);
-
-  input.value = "";
-
-  /*
-    Temporary local response.
-    Later actual ZORO AI API will be connected here.
-  */
-
-  setTimeout(() => {
-
-    addMessage(
-      "zoro",
-      "I'm here. How can I help you?"
-    );
-
-  }, 600);
-
-});
-
-
-/* Enter key */
-
-input.addEventListener("keydown", function(event){
-
-  if(event.key === "Enter"){
+form.addEventListener(
+  "submit",
+  async function(event) {
 
     event.preventDefault();
 
-    form.requestSubmit();
+    const text =
+      input.value.trim();
+
+    if (!text) {
+      return;
+    }
+
+
+    /* Show user's message */
+
+    addMessage(
+      "you",
+      text
+    );
+
+    input.value = "";
+
+
+    /* Disable input while ZORO thinks */
+
+    input.disabled = true;
+
+
+    try {
+
+      const headers = {
+        "Content-Type":
+          "application/json"
+      };
+
+
+      /* Send existing session */
+
+      if (zoroSessionId) {
+
+        headers[
+          "X-Zoro-Session"
+        ] = zoroSessionId;
+
+      }
+
+
+      const response =
+        await fetch(
+          "/api/chat",
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              message: text
+            })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "ZORO could not respond."
+        );
+
+      }
+
+
+      /* Save private session */
+
+      if (data.sessionId) {
+
+        zoroSessionId =
+          data.sessionId;
+
+        localStorage.setItem(
+          "zoroSessionId",
+          zoroSessionId
+        );
+
+      }
+
+
+      /* Show real ZORO response */
+
+      addMessage(
+        "zoro",
+        data.reply ||
+        "I couldn't generate a response."
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "ZORO CHAT ERROR:",
+        error
+      );
+
+
+      addMessage(
+        "zoro",
+        "Sorry, I couldn't connect right now."
+      );
+
+    } finally {
+
+      input.disabled = false;
+
+      input.focus();
+
+    }
 
   }
+);
 
-});
+
+/* =========================
+   ENTER KEY
+========================= */
+
+input.addEventListener(
+  "keydown",
+  function(event) {
+
+    if (event.key === "Enter") {
+
+      event.preventDefault();
+
+      form.requestSubmit();
+
+    }
+
+  }
+);
 
 
-/* Voice button */
+/* =========================
+   VOICE BUTTON
+========================= */
 
-micButton.addEventListener("click", function(){
+micButton.addEventListener(
+  "click",
+  function() {
 
-  /*
-    Real voice recognition will be connected later.
-  */
+    /*
+      Real voice recognition
+      will be connected later.
+    */
 
-  addMessage(
-    "zoro",
-    "voice input will be connected soon."
-  );
+    addMessage(
+      "zoro",
+      "Voice input will be connected soon."
+    );
 
-});
+  }
+);
