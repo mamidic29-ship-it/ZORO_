@@ -143,10 +143,10 @@ app.post("/api/vision", async (req, res) => {
    START
 ========================= */
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
 
   console.log(
-    `ZORO running at http://localhost:${PORT}`
+    `ZORO running on port ${PORT}`
   );
 
 });
