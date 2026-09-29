@@ -184,22 +184,17 @@ app.post("/api/chat", async (req, res) => {
     });
 
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error(
-      "ZORO CHAT ERROR:",
-      error
-    );
+  console.error("ZORO CHAT ERROR:", error);
 
+  res.status(500).json({
+    error:
+      error?.message ||
+      "Unknown ZORO error"
+  });
 
-    res.status(500).json({
-      error: "ZORO could not respond."
-    });
-
-  }
-
-});
-
+}
 
 /* =========================
    VISION
