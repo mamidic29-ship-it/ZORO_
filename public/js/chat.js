@@ -178,19 +178,17 @@ form.addEventListener(
       );
 
 
-    } catch (error) {
+} catch (error) {
 
-      console.error(
-        "ZORO CHAT ERROR:",
-        error
-      );
+  console.error(
+    "ZORO CHAT ERROR:",
+    error
+  );
 
-
-      addMessage(
-        "zoro",
-        "Sorry, I couldn't connect right now."
-      );
-
+  addMessage(
+    "zoro",
+    "DEBUG: " + error.message
+  );
     } finally {
 
       input.disabled = false;
