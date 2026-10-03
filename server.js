@@ -183,18 +183,18 @@ app.post("/api/chat", async (req, res) => {
       sessionId: session.sessionId
     });
 
+      } catch (error) {
 
-    } catch (error) {
+    console.error("ZORO CHAT ERROR:", error);
 
-  console.error("ZORO CHAT ERROR:", error);
+    res.status(500).json({
+      error:
+        error?.message ||
+        "Unknown ZORO error"
+    });
 
-  res.status(500).json({
-    error:
-      error?.message ||
-      "Unknown ZORO error"
-  });
-
-}
+  }
+});
 
 /* =========================
    VISION
